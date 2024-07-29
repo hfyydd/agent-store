@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import LoginForm from "./LoginForm";
+import LoginForm from "@/components/LoginForm";
 
 export default function Login({
   searchParams,
@@ -24,7 +24,7 @@ export default function Login({
       return redirect("/login?message=Could not authenticate user");
     }
 
-    return redirect("/protected");
+    return redirect("/");
   };
 
   const signUp = async (formData: FormData) => {
@@ -68,7 +68,7 @@ export default function Login({
     }
 
     if (data && !data.url) {
-      return redirect("/protected");
+      return redirect("/");
     }
 
     if (data && data.url) {
@@ -96,7 +96,7 @@ export default function Login({
     }
 
     if (data && !data.url) {
-      return redirect("/protected");
+      return redirect("/");
     }
 
     if (data && data.url) {
