@@ -21,7 +21,7 @@ const Sidebar = () => {
       id: 2,
       title: '资源管理',
       items: [
-        { id: 'context', name: 'Context Caching', path: '/dashboard/context' },
+        { id: 'workflow', name: 'Workflow', path: '/dashboard/workflow' },
       ]
     },
     {
