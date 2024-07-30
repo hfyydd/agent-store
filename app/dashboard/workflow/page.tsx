@@ -1,9 +1,8 @@
+// app/workflow/page.tsx
 import WorkflowClient from './WorkflowClient';
 import { createClient } from "@/utils/supabase/server";
 
-
 export default async function WorkflowPage() {
-
   const supabase = createClient();
 
   const { data: { user }, error: userError } = await supabase.auth.getUser();

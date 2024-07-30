@@ -1,7 +1,9 @@
+// app/workflow/WorkflowClient.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
+import UploadWorkflowDialog from '@/components/UploadWorkflowDialog';
 
 interface Workflow {
   id: string;
@@ -9,11 +11,12 @@ interface Workflow {
   description: string;
   content: string;
   created_at: string;
+  icon_url?: string;
 }
 
 export default function WorkflowClient({ initialWorkflows, userId }: { initialWorkflows: Workflow[], userId: string }) {
   const [workflows, setWorkflows] = useState<Workflow[]>(initialWorkflows);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const supabase = createClient();
 
   const fetchWorkflows = async () => {
@@ -34,37 +37,6 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
     fetchWorkflows();
   }, []);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-
-    try {
-      const content = await file.text();
-
-      const { data: workflow, error: dbError } = await supabase
-        .from('workflows')
-        .insert({
-          user_id: userId,
-          name: file.name,
-          content: content,
-          description: 'New workflow'
-        })
-        .select()
-        .single();
-
-      if (dbError) throw dbError;
-
-      await fetchWorkflows(); // Refresh the list after upload
-    } catch (error) {
-      console.error('Error uploading workflow:', error);
-      alert('Failed to upload workflow: ' + (error as Error).message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const handleDelete = async (workflowId: string) => {
     if (!confirm('Are you sure you want to delete this workflow?')) {
       return;
@@ -78,7 +50,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
 
       if (error) throw error;
 
-      await fetchWorkflows(); // Refresh the list after deletion
+      await fetchWorkflows();
       alert('Workflow deleted successfully');
     } catch (error) {
       console.error('Error deleting workflow:', error);
@@ -90,46 +62,39 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">My Workflows</h1>
       
-      <div className="mb-6">
-        <input
-          type="file"
-          accept=".yml,.txt"
-          onChange={handleFileUpload}
-          disabled={isUploading}
-          className="hidden"
-          id="workflow-upload"
-        />
-        <label
-          htmlFor="workflow-upload"
-          className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-        >
-          {isUploading ? 'Uploading...' : 'Upload Workflow'}
-        </label>
-      </div>
+      <button
+        onClick={() => setIsDialogOpen(true)}
+        className="mb-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+      >
+        Upload Workflow
+      </button>
 
       {workflows.length === 0 ? (
         <p>No workflows uploaded yet.</p>
       ) : (
         <ul className="space-y-4">
           {workflows.map((workflow) => (
-            <li key={workflow.id} className="bg-white p-4 rounded shadow">
-              <h2 className="text-lg font-semibold">{workflow.name}</h2>
-              <p className="text-gray-600">{workflow.description}</p>
-              <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
-              <div className="mt-2 space-x-2">
+            <li key={workflow.id} className="bg-white p-4 rounded shadow flex items-center">
+              <img src={workflow.icon_url || '/default-icon.png'} alt={workflow.name} className="w-12 h-12 mr-4" />
+              <div className="flex-grow">
+                <h2 className="text-lg font-semibold">{workflow.name}</h2>
+                <p className="text-gray-600">{workflow.description}</p>
+                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
+              </div>
+              <div className="flex space-x-2">
                 <button
                   onClick={() => {
                     const blob = new Blob([workflow.content], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `${workflow.name}.dsl`;
+                    a.download = `${workflow.name}.yml`;
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
                   className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors"
                 >
-                  Download DSL
+                  Download
                 </button>
                 <button
                   onClick={() => {
@@ -150,6 +115,13 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
           ))}
         </ul>
       )}
+
+      <UploadWorkflowDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onUploadSuccess={fetchWorkflows}
+        userId={userId}
+      />
     </div>
   );
 }

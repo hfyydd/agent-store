@@ -21,17 +21,14 @@ export default async function RootLayout({
   }
 
   // 检查当前路径，如果是根路径，则重定向到 BasicInfo
-  if (typeof window !== 'undefined' && window.location.pathname === '/') {
-    redirect('/basicinfo');
-  }
+
 
   return (
-    <html lang="en">
-      <body>
+
         <div className="flex flex-col min-h-screen w-full">
           <nav className="w-full flex justify-between items-center border-b border-b-foreground/10 h-16 px-4">
             <Link
-              href="/basicinfo"
+              href="/"
               className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
             >
               Home
@@ -47,7 +44,6 @@ export default async function RootLayout({
             </main>
           </div>
         </div>
-      </body>
-    </html>
+
   );
 }
