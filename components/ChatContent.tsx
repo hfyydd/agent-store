@@ -14,7 +14,7 @@ interface Workflow {
 
 export default function ChatContent() {
   const searchParams = useSearchParams();
-  const workflowId = searchParams.get('id');
+  const workflowId = searchParams.get('workflow');
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
 
   useEffect(() => {
