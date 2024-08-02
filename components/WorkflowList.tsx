@@ -12,6 +12,7 @@ interface Workflow {
   likes: number;
   tags: string[];
   content: string;
+  price?: number;
 }
 
 interface WorkflowListProps {
@@ -38,6 +39,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           likes={workflow.likes}
           tagIds={workflow.tags}
           content={workflow.content}
+          price={workflow.price}
         />
       ))}
     </main>

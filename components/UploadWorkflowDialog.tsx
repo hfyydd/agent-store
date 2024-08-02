@@ -22,6 +22,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({ isOpen, onC
   const [isUploading, setIsUploading] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [price, setPrice] = useState('');
 
   const supabase = createClient();
 
@@ -49,6 +50,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({ isOpen, onC
     setYamlFile(null);
     setTestUrl('');
     setSelectedTags([]);
+    setPrice('');
     setIsUploading(false);
   };
 
@@ -68,8 +70,8 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({ isOpen, onC
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !yamlFile || selectedTags.length === 0) {
-      alert('Please provide a name, YAML file, and select at least one tag');
+    if (!name || !yamlFile || selectedTags.length === 0 || !price) {
+      alert('Please provide a name, YAML file, price, and select at least one tag');
       return;
     }
 
@@ -97,6 +99,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({ isOpen, onC
           content: yamlContent,
           test_url: testUrl,
           tags: selectedTags,
+          price: parseFloat(price),
         })
         .select()
         .single();
@@ -160,6 +163,32 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({ isOpen, onC
               maxLength={800}
             />
             <p className="text-xs text-gray-500 mt-1 text-right">{description.length}/800</p>
+          </div>
+
+          {/* Price input */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
+              Price (¥) <span className="text-red-500">*</span>
+            </label>
+            <div className="relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">¥</span>
+              </div>
+              <input
+                id="price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                placeholder="0.00"
+                required
+              />
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">CNY</span>
+              </div>
+            </div>
           </div>
 
           {/* Test URL input */}

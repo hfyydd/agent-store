@@ -67,7 +67,7 @@ export default function RechargePage() {
         <p>1.请确保您的账户有足够金额进行交易。</p>
         <p>2.若充值过程遇到交易问题，请前往相应的第三方支付平台进行确认。</p>
         <p>3.为了保障您的账户安全与充值体验的顺畅，您每月最多可享受30次充值服务。1天内未支付的订单，会自动关闭。</p>
-        <p>4.充值完成后可前往 <a href="/account" className="text-blue-500">账户总览</a> 查看账户余额。</p>
+        <p>4.充值完成后可前往 <a href="/dashboard/overview" className="text-blue-500">账户总览</a> 查看账户余额。</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">

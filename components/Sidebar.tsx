@@ -12,9 +12,9 @@ const Sidebar = () => {
       title: '账户信息',
       items: [
         { id: 'basic', name: '基本信息', path: '/dashboard/basic' },
-        { id: 'verify', name: '实名认证', path: '/dashboard/verify' },
-        { id: 'apikey', name: 'API Key 管理', path: '/dashboard/apikey' },
-        { id: 'usage', name: '用量限制', path: '/dashboard/usage' },
+        // { id: 'verify', name: '实名认证', path: '/dashboard/verify' },
+        // { id: 'apikey', name: 'API Key 管理', path: '/dashboard/apikey' },
+        // { id: 'usage', name: '用量限制', path: '/dashboard/usage' },
       ]
     },
     {
@@ -30,10 +30,10 @@ const Sidebar = () => {
       items: [
         { id: 'overview', name: '账户总览', path: '/dashboard/overview' },
         { id: 'recharge', name: '账户充值', path: '/dashboard/recharge' },
-        { id: 'history', name: '充值明细', path: '/dashboard/history' },
-        { id: 'billing', name: '计费明细', path: '/dashboard/billing' },
-        { id: 'invoice', name: '发票管理', path: '/dashboard/invoice' },
-        { id: 'coupon', name: '代金券管理', path: '/dashboard/coupon' },
+        // { id: 'history', name: '充值明细', path: '/dashboard/history' },
+        // { id: 'billing', name: '计费明细', path: '/dashboard/billing' },
+        // { id: 'invoice', name: '发票管理', path: '/dashboard/invoice' },
+        // { id: 'coupon', name: '代金券管理', path: '/dashboard/coupon' },
       ]
     }
   ];
