@@ -1,6 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import AuthButton from "../components/AuthButton";
-import NavBar from "@/components/NavBar";
+import TagNav from "@/components/TagNav";
 import WorkflowList from "@/components/WorkflowList";
 
 interface Workflow {
@@ -43,15 +42,8 @@ export default async function Index() {
   if (error) {
     console.error('Error fetching workflows:', error);
   }
-  
-
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-end border-b border-b-foreground/10 h-16">
-        <div className="container mx-auto px-4 flex justify-end items-center h-full">
-          <AuthButton />
-        </div>
-      </nav>
       <div className="flex-1 w-full flex flex-col gap-20 items-center">
         <div className="container mx-auto px-4">
           {featuredWorkflow && featuredWorkflow.workflows && (
@@ -59,8 +51,8 @@ export default async function Index() {
               <div>
                 <h1 className="text-3xl font-bold mt-2">{featuredWorkflow.workflows.name}</h1>
                 <p className="text-gray-600 mt-1">{featuredWorkflow.workflows.description}</p>
-                <a 
-                  href={`/chat?workflow=${featuredWorkflow.workflows.id}`} 
+                <a
+                  href={`/chat?workflow=${featuredWorkflow.workflows.id}`}
                   className="bg-black text-white px-6 py-2 rounded-full mt-4 inline-block"
                 >
                   现在就试试吧
@@ -68,9 +60,7 @@ export default async function Index() {
               </div>
             </header>
           )}
-
-          <NavBar />
-
+          <TagNav />
           {workflows && <WorkflowList workflows={workflows} />}
         </div>
       </div>
