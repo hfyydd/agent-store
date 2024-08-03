@@ -11,7 +11,7 @@ export default function NavBar() {
         <div className="flex items-center space-x-4">
           <NavLink href="/store" enabled={true} label={
             <div className="flex items-center space-x-2">
-              {/* <Image src="/logo.png" alt="Logo" width={32} height={32} /> */}
+              <Image src="/images/koala.svg" alt="Logo" width={32} height={32} />
               <span className="font-bold text-xl">考拉编程树屋</span>
             </div>
           } />
