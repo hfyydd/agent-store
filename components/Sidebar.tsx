@@ -1,10 +1,15 @@
 "use client"
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useUser } from '@/hooks/useUser';
+import { useAdmin } from '@/hooks/useAdmin';
+
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const { user } = useUser();
+  const { isAdmin, loading } = useAdmin();
 
   const menuStructure = [
     {
@@ -35,30 +40,45 @@ const Sidebar = () => {
         // { id: 'invoice', name: '发票管理', path: '/dashboard/invoice' },
         // { id: 'coupon', name: '代金券管理', path: '/dashboard/coupon' },
       ]
+    },
+    {
+      id: 4,
+      title: '管理员功能',
+      items: [
+        { id: 'admin', name: '管理员充值', path: '/dashboard/admin' },
+        { id: 'transaction', name: '充值记录', path: '/dashboard/transaction' },
+        { id: 'purchases', name: '交易记录', path: '/dashboard/purchases' },
+      ]
     }
   ];
+
 
   return (
     <div className="w-64 bg-gray-100 min-h-[calc(100vh-4rem)] overflow-y-auto">
       <div className="py-4">
         {menuStructure.map((section) => (
           <div key={section.id} className="mb-4">
-            <div className="px-6 py-2 text-sm font-semibold text-gray-500">
-              {section.title}
-            </div>
-            {section.items.map((item) => (
-              <Link 
-                key={item.id} 
-                href={item.path}
-                className={`block px-6 py-2 cursor-pointer transition-colors duration-200 ${
-                  pathname === item.path
-                    ? 'bg-blue-500 text-white' 
-                    : 'hover:bg-gray-200'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {/* 只有管理员可以看到管理员功能 */}
+            {(section.id !== 4 || isAdmin) && (
+              <>
+                <div className="px-6 py-2 text-sm font-semibold text-gray-500">
+                  {section.title}
+                </div>
+                {section.items.map((item) => (
+                  <Link 
+                    key={item.id} 
+                    href={item.path}
+                    className={`block px-6 py-2 cursor-pointer transition-colors duration-200 ${
+                      pathname === item.path
+                        ? 'bg-blue-500 text-white' 
+                        : 'hover:bg-gray-200'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </>
+            )}
           </div>
         ))}
       </div>

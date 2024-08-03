@@ -26,17 +26,6 @@ export default async function RootLayout({
   return (
 
         <div className="flex flex-col min-h-screen w-full">
-          <nav className="w-full flex justify-between items-center border-b border-b-foreground/10 h-16 px-4">
-            <Link
-              href="/"
-              className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-            >
-              Home
-            </Link>
-            <div className="flex items-center gap-4">
-              <LogoutButton />
-            </div>
-          </nav>
           <div className="flex flex-1 w-full">
             <Sidebar />
             <main className="flex-1 p-6 overflow-auto">
