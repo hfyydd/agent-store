@@ -1,9 +1,6 @@
-
-import { signOut } from "@/app/actions/auth";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-
 
 export default async function AuthButton() {
   const supabase = createClient();
@@ -12,28 +9,30 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return user ? (
-    <div className="flex items-center gap-4">
-      欢迎👏, {user.email}!
+  if (user) {
+    return (
+      <div className="flex items-center gap-4 flex-wrap">
+        <span className="text-sm">欢迎👏, {user.email}!</span>
+        <Link
+          href="/dashboard"
+          className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover hidden md:inline-block"
+        >
+          控制台
+        </Link>
+        <span className="text-sm text-gray-500 md:hidden">
+          请在桌面端访问控制台
+        </span>
+        <LogoutButton />
+      </div>
+    );
+  } else {
+    return (
       <Link
-        href="/dashboard"
-        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+        href="/login"
+        className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
       >
-        控制台
+        登录
       </Link>
-      <LogoutButton />
-      {/* <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          登出
-        </button>
-      </form> */}
-    </div>
-  ) : (
-    <Link
-      href="/login"
-      className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-    >
-      登录
-    </Link>
-  );
+    );
+  }
 }

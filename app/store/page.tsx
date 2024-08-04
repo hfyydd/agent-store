@@ -46,21 +46,19 @@ export default async function Index() {
   }
 
   return (
-    <div className="min-h-screen pb-16"> {/* 添加 pb-16 为 footer 留出空间 */}
-      <main>
-        <div className="container mx-auto px-4">
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow">
+        <div className="max-w-full px-4 sm:px-6 lg:px-8 py-6 mx-auto">
           {featuredWorkflow && featuredWorkflow.workflows && (
-            <header className="flex justify-between items-center py-8">
-              <div>
-                <h1 className="text-3xl font-bold mt-2">{featuredWorkflow.workflows.name}</h1>
-                <p className="text-gray-600 mt-1">{featuredWorkflow.workflows.description}</p>
-                <a
-                  href={`/chat?workflow=${featuredWorkflow.workflows.id}`}
-                  className="bg-black text-white px-6 py-2 rounded-full mt-4 inline-block"
-                >
-                  现在就试试吧
-                </a>
-              </div>
+            <header className="mb-8">
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{featuredWorkflow.workflows.name}</h1>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 break-words">{featuredWorkflow.workflows.description}</p>
+              <a
+                href={`/chat?workflow=${featuredWorkflow.workflows.id}`}
+                className="bg-black text-white px-4 py-2 text-sm sm:text-base rounded-full inline-block hover:bg-gray-800 transition-colors"
+              >
+                现在就试试吧
+              </a>
             </header>
           )}
           <TagNav />
@@ -68,18 +66,20 @@ export default async function Index() {
         </div>
       </main>
 
-      <footer className="fixed bottom-0 left-0 w-full border-t border-t-foreground/10 p-4 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href=""
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            找自己
-          </a>
-        </p>
+      <footer className="w-full border-t border-t-foreground/10 py-4 px-4 mt-auto">
+        <div className="text-center text-xs">
+          <p>
+            Powered by{" "}
+            <a
+              href=""
+              target="_blank"
+              className="font-bold hover:underline"
+              rel="noreferrer"
+            >
+              找自己
+            </a>
+          </p>
+        </div>
       </footer>
     </div>
   );

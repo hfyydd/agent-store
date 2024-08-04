@@ -9,9 +9,10 @@ interface NavLinkProps {
   href: string;
   label: string | ReactNode;
   enabled: boolean;
+  className?: string;
 }
 
-export default function NavLink({ href, label, enabled }: NavLinkProps) {
+export default function NavLink({ href, label, enabled, className = '' }: NavLinkProps) {
   const router = useRouter();
   const [showAlert, setShowAlert] = useState(false);
 
@@ -26,12 +27,16 @@ export default function NavLink({ href, label, enabled }: NavLinkProps) {
     }
   };
 
+  const baseClasses = "text-foreground/80 hover:text-foreground transition-colors duration-200";
+  const disabledClasses = !enabled ? 'opacity-50 cursor-not-allowed' : '';
+  const combinedClasses = `${baseClasses} ${disabledClasses} ${className}`.trim();
+
   return (
     <>
       <Link
         href={href}
         onClick={handleClick}
-        className={`text-foreground/80 hover:text-foreground ${!enabled && 'opacity-50'}`}
+        className={combinedClasses}
       >
         {label}
       </Link>
