@@ -1,31 +1,45 @@
+"use client";
+
 import Link from 'next/link';
-import { createClient } from "@/utils/supabase/server";
+import { useRouter, useSearchParams } from 'next/navigation';
+import useSWR from 'swr';
 
-export default async function TagNav() {
-  const supabase = createClient();
-  
-  const { data: tags, error: tagsError } = await supabase
-    .from('tags')
-    .select('*')
+interface Tag {
+  id: string;
+  name: string;
+}
 
-  if (tagsError) {
-    console.error('Error fetching tags:', tagsError);
-  }
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export default function TagNav() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTag = searchParams.get('tag');
+
+  const { data: tags, error } = useSWR<Tag[]>('/api/tags', fetcher);
+
+  if (error) console.error('Error fetching tags:', error);
+
+  const handleTagClick = (tagId: string) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('tag', tagId);
+    router.replace(`/?${newSearchParams.toString()}`);
+  };
 
   return (
     <nav className="overflow-x-auto whitespace-nowrap py-4">
-      <Link href="/" className="text-sm mr-4 pb-2 border-b-2 border-transparent hover:border-blue-500">
+      <Link href="/" className={`text-sm mr-4 pb-2 border-b-2 ${!currentTag ? 'border-blue-500' : 'border-transparent'} hover:border-blue-500`}>
         全部
       </Link>
       {tags && tags.map((tag) => (
-        <Link 
-          key={tag.id} 
-          href={`/?tag=${encodeURIComponent(tag.id)}`}
-          className="text-sm mr-4 pb-2 border-b-2 border-transparent hover:border-blue-500"
+        <button
+          key={tag.id}
+          onClick={() => handleTagClick(tag.id)}
+          className={`text-sm mr-4 pb-2 border-b-2 ${currentTag === tag.id ? 'border-blue-500' : 'border-transparent'} hover:border-blue-500`}
         >
           {tag.name}
-        </Link>
+        </button>
       ))}
     </nav>
-  )
+  );
 }

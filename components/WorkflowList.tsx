@@ -1,10 +1,9 @@
 // components/WorkflowList.tsx
-"use client";
-
+"use client"
 import { useSearchParams } from "next/navigation";
 import ToolCard from "@/components/ToolCard";
 
-interface Workflow {
+export interface Workflow {
   id: string;
   name: string;
   description: string;
@@ -18,6 +17,7 @@ interface Workflow {
 interface WorkflowListProps {
   workflows: Workflow[];
 }
+
 export default function WorkflowList({ workflows }: WorkflowListProps) {
   const searchParams = useSearchParams();
   const tagId = searchParams.get('tag');
