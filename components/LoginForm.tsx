@@ -100,7 +100,7 @@ export default function LoginForm({ signIn, signUp, signInWithGitHub, signInWith
         </div>
 
         <div className="mt-6 space-y-4">
-          <form action={signInWithGoogle}>
+          {/* <form action={signInWithGoogle}>
             <button
               type="submit"
               className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -113,7 +113,7 @@ export default function LoginForm({ signIn, signUp, signInWithGitHub, signInWith
               </svg>
               继续使用 Google 登录
             </button>
-          </form>
+          </form> */}
           <form action={signInWithGitHub}>
             <button
               type="submit"

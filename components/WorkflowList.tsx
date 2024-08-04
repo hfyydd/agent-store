@@ -26,6 +26,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
   const filteredWorkflows = tagId
     ? workflows.filter(workflow => workflow.tags.includes(tagId))
     : workflows;
+  
 
   return (
     <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">

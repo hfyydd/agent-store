@@ -2,6 +2,7 @@
 import { signOut } from "@/app/actions/auth";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
 
 export default async function AuthButton() {
@@ -13,25 +14,26 @@ export default async function AuthButton() {
 
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      欢迎👏, {user.email}!
       <Link
         href="/dashboard"
         className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
       >
-        Dashboard
+        控制台
       </Link>
-      <form action={signOut}>
+      <LogoutButton />
+      {/* <form action={signOut}>
         <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Logout
+          登出
         </button>
-      </form>
+      </form> */}
     </div>
   ) : (
     <Link
       href="/login"
       className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
     >
-      Login
+      登录
     </Link>
   );
 }

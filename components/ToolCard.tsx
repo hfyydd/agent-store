@@ -1,16 +1,14 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
-import { FaHeart, FaDownload, FaTimes } from 'react-icons/fa';
-import { useUser } from '@/hooks/useUser'; // 假设您有一个用户hook
+import { FaDownload, FaTimes } from 'react-icons/fa';
+import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 
 interface ToolCardProps {
   id: string;
   title: string;
   description: string;
-  views: number;
-  likes: number;
   tagIds: string[];
   content: string;
   price?: number;
@@ -21,14 +19,13 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, views, likes, tagIds, content, price }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [localLikes, setLocalLikes] = useState(likes);
   const supabase = createClient();
 
   const [userBalance, setUserBalance] = useState(0);
-  const { user } = useUser(); // 获取当前用户
+  const { user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -48,14 +45,12 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
     }
 
     async function fetchUserBalance() {
-      console.log('user:', user);
       if (user) {
         const { data, error } = await supabase
           .from('accounts')
           .select('balance')
           .eq('user_id', user.id)
           .single();
-        console.log('data:', data);
         if (data) {
           setUserBalance(data.balance);
         } else if (error) {
@@ -66,7 +61,7 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
 
     fetchTags();
     fetchUserBalance();
-  }, [tagIds]);
+  }, [tagIds, user, supabase]);
 
   const renderTags = () => {
     if (tags.length === 0) return null;
@@ -81,17 +76,13 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
   const renderPrice = () => {
     return (
       <span className="text-green-600 font-semibold">
-        价格: {typeof price === 'number' ? `¥${price.toFixed(2)}` : '未设置'}
+        价格: {typeof price === 'number' ? `🐨${price.toFixed(2)}` : '未设置'}
       </span>
     );
   };
 
-  const handleLike = async () => {
-    console.log('Like button clicked');
-    setLocalLikes(prevLikes => prevLikes + 1);
-    // Here you would typically update the likes in your database
-    // For example:
-    // await supabase.from('workflows').update({ likes: localLikes + 1 }).eq('id', id);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
   };
 
   const handleDownload = async () => {
@@ -99,7 +90,6 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
       alert('请先登录');
       return;
     }
-    console.log('userBalance:', userBalance); 
 
     if (!price || price <= 0) {
       // 如果工作流是免费的，直接下载
@@ -113,7 +103,7 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
       return;
     }
 
-    const isConfirmed = window.confirm(`确认下载吗？将从您的账户中扣除 ¥${price.toFixed(2)}`);
+    const isConfirmed = window.confirm(`确认下载吗？将从您的账户中扣除 🐨${price.toFixed(2)}`);
     
     if (isConfirmed) {
       // 扣除余额并更新数据库
@@ -157,7 +147,7 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
     <>
       <div 
         className="border rounded-lg p-4 shadow-sm transition duration-300 ease-in-out hover:shadow-md hover:border-gray-400 hover:bg-gray-50 cursor-pointer h-48 flex flex-col justify-between transform hover:-translate-y-1 hover:scale-105"
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpenModal}
       >
         <div>
           <div className="flex justify-between items-center mb-2">
@@ -167,10 +157,6 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
           <p className="text-gray-600 text-sm mb-4 line-clamp-2">{description}</p>
         </div>
         <div>
-          <div className="flex items-center text-sm text-gray-500 mb-2">
-            <span className="mr-4 transition duration-300 ease-in-out hover:text-gray-700">{views} 浏览</span>
-            <span className="transition duration-300 ease-in-out hover:text-gray-700">{localLikes} 赞</span>
-          </div>
           <div className="overflow-hidden h-6">
             {renderTags()}
           </div>
@@ -190,14 +176,7 @@ export default function ToolCard({ id, title, description, views, likes, tagIds,
             {renderPrice()}
             <p className="text-gray-600 mt-2 mb-4">{description}</p>
             <div className="mb-4">{renderTags()}</div>
-            <p className="text-sm text-gray-500 mb-4">浏览: {views} | 赞: {localLikes}</p>
             <div className="flex justify-end space-x-4">
-              <button 
-                onClick={handleLike}
-                className="p-2 text-red-500 hover:text-red-600 transition duration-300"
-              >
-                <FaHeart />
-              </button>
               <button 
                 onClick={handleDownload}
                 className="p-2 text-green-500 hover:text-green-600 transition duration-300"

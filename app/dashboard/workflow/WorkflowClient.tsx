@@ -60,17 +60,17 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">My Workflows</h1>
+      <h1 className="text-2xl font-bold mb-6">我的 Workflows</h1>
       
       <button
         onClick={() => setIsDialogOpen(true)}
         className="mb-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
       >
-        Upload Workflow
+        上传 Workflow
       </button>
 
       {workflows.length === 0 ? (
-        <p>No workflows uploaded yet.</p>
+        <p>还没有 workflows 上传 😭.</p>
       ) : (
         <ul className="space-y-4">
           {workflows.map((workflow) => (
@@ -94,16 +94,16 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
                   }}
                   className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors"
                 >
-                  Download
+                  下载
                 </button>
-                <button
+                {/* <button
                   onClick={() => {
                     alert(workflow.content.slice(0, 200) + '...');
                   }}
                   className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
                 >
                   Preview
-                </button>
+                </button> */}
                 <button
                   onClick={() => handleDelete(workflow.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"

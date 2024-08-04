@@ -6,6 +6,8 @@ interface Workflow {
   id: string;
   name: string;
   description: string;
+  views: number;
+  likes: number;
   // 添加其他需要的字段
 }
 
@@ -42,9 +44,10 @@ export default async function Index() {
   if (error) {
     console.error('Error fetching workflows:', error);
   }
+
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
+    <div className="min-h-screen pb-16"> {/* 添加 pb-16 为 footer 留出空间 */}
+      <main>
         <div className="container mx-auto px-4">
           {featuredWorkflow && featuredWorkflow.workflows && (
             <header className="flex justify-between items-center py-8">
@@ -63,9 +66,9 @@ export default async function Index() {
           <TagNav />
           {workflows && <WorkflowList workflows={workflows} />}
         </div>
-      </div>
+      </main>
 
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
+      <footer className="fixed bottom-0 left-0 w-full border-t border-t-foreground/10 p-4 flex justify-center text-center text-xs">
         <p>
           Powered by{" "}
           <a

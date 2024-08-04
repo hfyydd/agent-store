@@ -110,7 +110,7 @@ const TransactionPage: React.FC = () => {
                     {transaction.admin_email || transaction.admin_id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ¥{transaction.amount.toFixed(2)}
+                    🐨{transaction.amount.toFixed(2)}
                   </td>
                 </tr>
               ))}
