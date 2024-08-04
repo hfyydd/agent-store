@@ -36,8 +36,6 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           id={workflow.id}
           title={workflow.name}
           description={workflow.description}
-          views={workflow.views}
-          likes={workflow.likes}
           tagIds={workflow.tags}
           content={workflow.content}
           price={workflow.price}
