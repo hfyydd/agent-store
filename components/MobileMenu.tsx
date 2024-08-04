@@ -16,9 +16,9 @@ export default function MobileMenu({ navItems, children }) {
       {isMenuOpen && (
         <div className="absolute top-16 left-0 right-0 bg-background border-b border-b-foreground/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) => (
+            {/* {navItems.map((item) => (
               <NavLink key={item.href} {...item} className="block px-3 py-2 rounded-md text-base font-medium" />
-            ))}
+            ))} */}
             <div className="px-3 py-2">
               {children}
             </div>
