@@ -8,10 +8,11 @@ import { createClient } from '@/utils/supabase/client';
 interface Purchase {
   id: string;
   user_id: string;
+  workflow_id: string;
   amount: number;
   created_at: string;
+  updated_at: string;
   description: string;
-  // 添加其他可能的字段
 }
 
 const PurchasesPage: React.FC = () => {
@@ -62,7 +63,7 @@ const PurchasesPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-full mx-auto">
       <h1 className="text-2xl font-bold mb-6">交易记录</h1>
       <button
         onClick={fetchPurchases}
@@ -73,31 +74,33 @@ const PurchasesPage: React.FC = () => {
       {purchases.length === 0 ? (
         <p className="text-center text-gray-500">暂无交易记录</p>
       ) : (
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div className="bg-white shadow overflow-x-auto sm:rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作流ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">更新时间</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {purchases.map((purchase) => (
                 <tr key={purchase.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.user_id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.workflow_id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">🐨{purchase.amount.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(purchase.created_at).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {purchase.user_id}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(purchase.updated_at).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {purchase.description}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    🐨{purchase.amount.toFixed(2)}
-                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.description}</td>
                 </tr>
               ))}
             </tbody>
