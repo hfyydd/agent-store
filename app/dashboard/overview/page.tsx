@@ -35,7 +35,7 @@ export default async function AccountOverviewPage() {
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">账户总览</h1>
-      
+      <h2 className="text-2xl font-bold mb-6">10 考拉币🐨 = 1 元</h2>
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-lg font-semibold mb-2">余额（考拉币）</h2>

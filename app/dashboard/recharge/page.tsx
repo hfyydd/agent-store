@@ -174,6 +174,7 @@ export default function RechargePage() {
           <li>添加我们的客服微信：<strong>微信号：koalababy2024</strong></li>
           <li>告知客服您需要充值的金额</li>
           <li>客服将指导您完成充值流程</li>
+          <li>10 考拉币🐨 = 1 元</li>
         </ol>
         <p>我们将尽快恢复在线充值功能，感谢您的理解和支持。</p>
       </div>

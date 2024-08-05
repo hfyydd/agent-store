@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
-import { FaDownload, FaTimes } from 'react-icons/fa';
+import { FaDownload, FaTimes, FaEye } from 'react-icons/fa';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 
@@ -62,6 +62,10 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     fetchTags();
     fetchUserBalance();
   }, [tagIds, user, supabase]);
+
+  const handleViewInChat = () => {
+    router.push(`/chat?workflow=${id}`);
+  };
 
   const renderTags = () => {
     if (tags.length === 0) return null;
@@ -129,7 +133,13 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
               {renderPrice()}
               <p className="text-gray-600 text-sm mt-2 mb-3">{description}</p>
               <div className="mb-3 flex flex-wrap">{renderTags()}</div>
-              <div className="flex justify-end">
+              <div className="flex justify-end space-x-2">
+              <button
+                  onClick={handleViewInChat}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center text-sm"
+                >
+                  <FaEye className="mr-2" /> 查看
+                </button>
                 <button
                   onClick={handleDownload}
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center text-sm"
