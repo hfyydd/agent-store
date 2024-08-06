@@ -29,7 +29,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState('0.00');
   const [uploadType, setUploadType] = useState<UploadType>('workflow');
 
   const supabase = createClient();
@@ -64,7 +64,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
     setFile(null);
     setTestUrl('');
     setSelectedTags([]);
-    setPrice('');
+    setPrice('0.00');
     setIsUploading(false);
     setUploadType('workflow');
   };
@@ -80,7 +80,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !file || selectedTags.length === 0 || !price) {
-      alert('Please provide a name, file, price, and select at least one tag');
+      alert('请提供 名称, 图标, 价格, 和选择至少一个 Tag');
       return;
     }
   
@@ -90,7 +90,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
       // 检查用户认证
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        throw new Error('User not authenticated');
+        throw new Error('未找到用户');
       }
   
       // 读取文件内容
@@ -100,18 +100,17 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
       if (icon) {
         // 检查文件类型
         if (!icon.type.startsWith('image/')) {
-          throw new Error('Only image files are allowed for icons');
+          throw new Error('只允许上传图片文件');
         }
   
         // 检查文件大小 (例如 5MB 限制)
         const MAX_FILE_SIZE = 5 * 1024 * 1024;
         if (icon.size > MAX_FILE_SIZE) {
-          throw new Error('Icon file size exceeds 5MB limit');
+          throw new Error('尺寸不能超过 5mb');
         }
   
         // 创建文件名 (使用允许的文件夹名)
-        const iconFileName = `${Date.now()}-${icon.name}`;
-        console.log('iconFileName:', iconFileName);
+        const iconFileName = `${user.id}-${Date.now()}-icon`;
         // 上传图标
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('workflow-icons')
