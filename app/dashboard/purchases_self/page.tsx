@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAdmin } from '@/hooks/useAdmin';
 import { createClient } from '@/utils/supabase/client';
 
 interface Purchase {
@@ -16,21 +15,22 @@ interface Purchase {
 }
 
 const PurchasesPage: React.FC = () => {
+  const supabase = createClient();
   const router = useRouter();
-  const { isAdmin, loading } = useAdmin();
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+
 
   useEffect(() => {
-    if (!loading && !isAdmin) {
-      router.push('/dashboard/basic');
-    } else if (isAdmin) {
+
       fetchPurchases();
-    }
-  }, [isAdmin, loading, router]);
+    
+  }, [router]);
 
   const fetchPurchases = async () => {
+    const { data: { user }, error } = await supabase.auth.getUser();
     try {
       setIsLoading(true);
       setError(null);
@@ -38,6 +38,7 @@ const PurchasesPage: React.FC = () => {
       const { data, error } = await supabase
         .from('purchases')
         .select('*')
+        .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
       console.log(data);
@@ -52,17 +53,13 @@ const PurchasesPage: React.FC = () => {
     }
   };
 
-  if (loading || isLoading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
+
 
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
   }
 
-  if (!isAdmin) {
-    return null;
-  }
+
 
   return (
     <div className="p-6 max-w-full mx-auto">

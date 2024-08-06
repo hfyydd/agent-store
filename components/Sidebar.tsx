@@ -27,6 +27,7 @@ const Sidebar = () => {
       title: '资源管理',
       items: [
         { id: 'workflow', name: 'Workflow', path: '/dashboard/workflow' },
+        { id: 'purchases_self', name: '交易记录', path: '/dashboard/purchases_self' },
       ]
     },
     {
