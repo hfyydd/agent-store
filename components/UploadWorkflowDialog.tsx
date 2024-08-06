@@ -78,31 +78,63 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('submit');
     e.preventDefault();
     if (!name || !file || selectedTags.length === 0 || !price) {
       alert('Please provide a name, file, price, and select at least one tag');
       return;
     }
-
+  
     setIsUploading(true);
-
+  
     try {
+      // 检查用户认证
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+  
+      // 读取文件内容
       const fileContent = await file.text();
-
+  
       let iconUrl = null;
       if (icon) {
-        const { data, error } = await supabase.storage
+        // 检查文件类型
+        if (!icon.type.startsWith('image/')) {
+          throw new Error('Only image files are allowed for icons');
+        }
+  
+        // 检查文件大小 (例如 5MB 限制)
+        const MAX_FILE_SIZE = 5 * 1024 * 1024;
+        if (icon.size > MAX_FILE_SIZE) {
+          throw new Error('Icon file size exceeds 5MB limit');
+        }
+  
+        // 创建文件名 (使用允许的文件夹名)
+        const iconFileName = `${Date.now()}-${icon.name}`;
+        console.log('iconFileName:', iconFileName);
+        // 上传图标
+        const { data: uploadData, error: uploadError } = await supabase.storage
           .from('workflow-icons')
-          .upload(`${userId}/${Date.now()}-${icon.name}`, icon);
-        if (error) throw error;
-        iconUrl = supabase.storage.from('workflow-icons').getPublicUrl(data.path).data.publicUrl;
+          .upload(iconFileName, icon, {
+            cacheControl: '3600',
+            upsert: false
+          });
+  
+        if (uploadError) throw uploadError;
+  
+        // 获取公共 URL
+        const { data: publicUrlData } = supabase.storage
+          .from('workflow-icons')
+          .getPublicUrl(iconFileName);
+  
+        iconUrl = publicUrlData.publicUrl;
       }
-
+  
+      // 插入数据到 workflows 表
       const { data, error } = await supabase
         .from('workflows')
         .insert({
-          user_id: userId,
+          user_id: user.id,
           name,
           description,
           icon_url: iconUrl,
@@ -114,14 +146,14 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
         })
         .select()
         .single();
-
+  
       if (error) throw error;
-
+  
       onUploadSuccess();
       onClose();
     } catch (error) {
       console.error('Error uploading workflow:', error);
-      alert('Failed to upload workflow');
+      alert(error instanceof Error ? error.message : 'Failed to upload workflow');
     } finally {
       setIsUploading(false);
     }

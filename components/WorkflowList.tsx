@@ -12,6 +12,7 @@ export interface Workflow {
   tags: string[];
   content: string;
   price?: number;
+  icon_url: string;
 }
 
 interface WorkflowListProps {
@@ -42,6 +43,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           tagIds={workflow.tags}
           content={workflow.content}
           price={workflow.price}
+          icon_url={workflow.icon_url}
         />
       ))}
     </div>
