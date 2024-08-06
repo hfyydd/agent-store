@@ -90,11 +90,58 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   };
 
   const handleDownload = async () => {
-    // ... (保持不变)
+    if (!user) {
+      alert('请先登录');
+      return;
+    }
+
+    if (!price || price <= 0) {
+      // 如果工作流是免费的，直接下载
+      downloadWorkflow();
+      return;
+    }
+    if (userBalance < price) {
+      alert('余额不足，请前往充值页面充值');
+      router.push('/dashboard/recharge'); 
+      return;
+    }
+    const isConfirmed = window.confirm(`确认下载吗？将从您的账户中扣除 🐨${price.toFixed(2)}`);
+
+    if (isConfirmed) {
+      // 扣除余额并更新数据库
+      const { data, error } = await supabase.rpc('purchase_workflow', {
+        workflow_id: id,
+        workflow_price: price
+      });
+      if (error) {
+        console.error('Purchase failed:', error);
+        alert('购买失败，请重试');
+      } else {
+        setUserBalance(prevBalance => prevBalance - price);
+        downloadWorkflow();
+      }
+    }
   };
 
   const downloadWorkflow = () => {
-    // ... (保持不变)
+    const blob = new Blob([content], { type: 'text/yaml;charset=utf-8' });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${title.replace(/\s+/g, '_').toLowerCase()}.yml`; // Set the filename
+
+    // Append to the document, click it, and remove it
+    link.download = `${title.replace(/\s+/g, '_').toLowerCase()}.yml`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Release the URL object
+    URL.revokeObjectURL(url);
   };
 
   return (
