@@ -27,6 +27,7 @@ export default function NavBar() {
           <AuthButton />
         </MobileMenu>
       </div>
+
     </nav>
   );
 }
