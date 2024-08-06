@@ -78,6 +78,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('submit');
     e.preventDefault();
     if (!name || !file || selectedTags.length === 0 || !price) {
       alert('Please provide a name, file, price, and select at least one tag');
@@ -143,175 +144,174 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
         </div>
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
           <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
-            <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  上传类型 <span className="text-red-500">*</span>
-                </label>
-                <div className="flex space-x-4">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      className="form-radio"
-                      name="uploadType"
-                      value="workflow"
-                      checked={uploadType === 'workflow'}
-                      onChange={() => setUploadType('workflow')}
-                    />
-                    <span className="ml-2">Workflow</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      className="form-radio"
-                      name="uploadType"
-                      value="prompt"
-                      checked={uploadType === 'prompt'}
-                      onChange={() => setUploadType('prompt')}
-                    />
-                    <span className="ml-2">Prompt</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
-                  {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 名称 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={`给 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 起一个独一无二的名字`}
-                  required
-                  maxLength={40}
-                />
-                <p className="text-xs text-gray-500 mt-1 text-right">{name.length}/40</p>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
-                  {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 简介
-                </label>
-                <textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  rows={3}
-                  placeholder={`介绍 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 的功能， 将会展示给用户`}
-                  maxLength={800}
-                />
-                <p className="text-xs text-gray-500 mt-1 text-right">{description.length}/800</p>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
-                  价格 (🐨) <span className="text-red-500">*</span>     🐨10 = ￥1
-                </label>
-                <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">🐨</span>
-                  </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                上传类型 <span className="text-red-500">*</span>
+              </label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
                   <input
-                    id="price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                    placeholder="0.00"
-                    required
+                    type="radio"
+                    className="form-radio"
+                    name="uploadType"
+                    value="workflow"
+                    checked={uploadType === 'workflow'}
+                    onChange={() => setUploadType('workflow')}
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">考拉币</span>
-                  </div>
-                </div>
-              </div>
-
-              {uploadType === 'workflow' && (
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="testUrl">
-                    测试 URL
-                  </label>
+                  <span className="ml-2">Workflow</span>
+                </label>
+                <label className="inline-flex items-center">
                   <input
-                    id="testUrl"
-                    type="url"
-                    value={testUrl}
-                    onChange={(e) => setTestUrl(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="https://ip/chat/workflow_id"
+                    type="radio"
+                    className="form-radio"
+                    name="uploadType"
+                    value="prompt"
+                    checked={uploadType === 'prompt'}
+                    onChange={() => setUploadType('prompt')}
                   />
-                </div>
-              )}
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tags <span className="text-red-500">*</span>
+                  <span className="ml-2">Prompt</span>
                 </label>
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <label key={tag.id} className="inline-flex items-center">
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-5 w-5 text-blue-600"
-                        checked={selectedTags.includes(tag.id)}
-                        onChange={() => handleTagChange(tag.id)}
-                      />
-                      <span className="ml-2 text-gray-700">{tag.name}</span>
-                    </label>
-                  ))}
-                </div>
               </div>
+            </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="icon">
-                  图标 (可选)
-                </label>
-                <input
-                  id="icon"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setIcon(e.target.files?.[0] || null)}
-                  className="hidden"
-                />
-                <div className="flex items-center space-x-2">
-                  {icon ? (
-                    <img src={URL.createObjectURL(icon)} alt="Selected icon" className="w-16 h-16 rounded-lg object-cover" />
-                  ) : (
-                    <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  )}
-                  <label htmlFor="icon" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                    上传
-                  </label>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 名称 <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder={`给 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 起一个独一无二的名字`}
+                required
+                maxLength={40}
+              />
+              <p className="text-xs text-gray-500 mt-1 text-right">{name.length}/40</p>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
+                {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 简介
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows={3}
+                placeholder={`介绍 ${uploadType === 'workflow' ? 'workflow' : 'prompt'} 的功能， 将会展示给用户`}
+                maxLength={800}
+              />
+              <p className="text-xs text-gray-500 mt-1 text-right">{description.length}/800</p>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="price">
+                价格 (🐨) <span className="text-red-500">*</span>     🐨10 = ￥1
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">🐨</span>
                 </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="file">
-                  文件 <span className="text-red-500">*</span>
-                </label>
                 <input
-                  id="file"
-                  type="file"
-                  accept={uploadType === 'workflow' ? ".yml,.yaml" : ".txt"}
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  className="hidden"
+                  id="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="0.00"
                   required
                 />
-                <label htmlFor="file" className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                  {file ? file.name : `选择 ${uploadType === 'workflow' ? 'YAML' : 'TXT'} 文件`}
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span className="text-gray-500 sm:text-sm">考拉币</span>
+                </div>
+              </div>
+            </div>
+
+            {uploadType === 'workflow' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="testUrl">
+                  测试 URL
+                </label>
+                <input
+                  id="testUrl"
+                  type="url"
+                  value={testUrl}
+                  onChange={(e) => setTestUrl(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="https://ip/chat/workflow_id"
+                />
+              </div>
+            )}
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tags <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <label key={tag.id} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-blue-600"
+                      checked={selectedTags.includes(tag.id)}
+                      onChange={() => handleTagChange(tag.id)}
+                    />
+                    <span className="ml-2 text-gray-700">{tag.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="icon">
+                图标 (可选)
+              </label>
+              <input
+                id="icon"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setIcon(e.target.files?.[0] || null)}
+                className="hidden"
+              />
+              <div className="flex items-center space-x-2">
+                {icon ? (
+                  <img src={URL.createObjectURL(icon)} alt="Selected icon" className="w-16 h-16 rounded-lg object-cover" />
+                ) : (
+                  <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                )}
+                <label htmlFor="icon" className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                  上传
                 </label>
               </div>
-            </form>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="file">
+                文件 <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="file"
+                type="file"
+                accept={uploadType === 'workflow' ? ".yml,.yaml" : ".txt"}
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                className="hidden"
+                required
+              />
+              <label htmlFor="file" className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                {file ? file.name : `选择 ${uploadType === 'workflow' ? 'YAML' : 'TXT'} 文件`}
+              </label>
+            </div>
           </form>
+
         </div>
         <div className="sticky bottom-0 bg-white py-4 px-6 border-t border-gray-200">
           <div className="flex justify-end space-x-2">
@@ -323,7 +323,8 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
               取消
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               disabled={isUploading}
               className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
