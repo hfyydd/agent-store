@@ -27,7 +27,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
 
     if (error) {
       console.error('Error fetching workflows:', error);
-      alert('Failed to fetch workflows');
+      alert('加载工作流失败');
     } else {
       setWorkflows(data || []);
     }
@@ -38,7 +38,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
   }, []);
 
   const handleDelete = async (workflowId: string) => {
-    if (!confirm('Are you sure you want to delete this workflow?')) {
+    if (!confirm('确认删除该工作流?')) {
       return;
     }
 
@@ -51,10 +51,10 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
       if (error) throw error;
 
       await fetchWorkflows();
-      alert('Workflow deleted successfully');
+      alert('Workflow 删除成功');
     } catch (error) {
       console.error('Error deleting workflow:', error);
-      alert('Failed to delete workflow');
+      alert('Workflow 删除失败');
     }
   };
 

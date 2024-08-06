@@ -12,6 +12,9 @@ interface Purchase {
   created_at: string;
   updated_at: string;
   description: string;
+  workflows: {
+    name: string;
+  };
 }
 
 const PurchasesPage: React.FC = () => {
@@ -20,28 +23,30 @@ const PurchasesPage: React.FC = () => {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-
 
   useEffect(() => {
-
-      fetchPurchases();
-    
+    fetchPurchases();
   }, [router]);
 
   const fetchPurchases = async () => {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      setError('Failed to authenticate user. Please try logging in again.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-      const supabase = createClient();
       const { data, error } = await supabase
         .from('purchases')
-        .select('*')
+        .select(`
+          *,
+          workflows:workflow_id (name)
+        `)
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
-
-      console.log(data);
 
       if (error) throw error;
       setPurchases(data || []);
@@ -53,13 +58,13 @@ const PurchasesPage: React.FC = () => {
     }
   };
 
-
+  if (isLoading) {
+    return <div className="text-center">Loading...</div>;
+  }
 
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
   }
-
-
 
   return (
     <div className="p-6 max-w-full mx-auto">
@@ -77,21 +82,16 @@ const PurchasesPage: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作流ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作流名称</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">更新时间</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {purchases.map((purchase) => (
                 <tr key={purchase.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.user_id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.workflow_id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.workflows?.name || '未知工作流'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">🐨{purchase.amount.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(purchase.created_at).toLocaleString()}
@@ -99,7 +99,6 @@ const PurchasesPage: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(purchase.updated_at).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.description}</td>
                 </tr>
               ))}
             </tbody>
