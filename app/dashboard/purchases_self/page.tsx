@@ -84,8 +84,7 @@ const PurchasesPage: React.FC = () => {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">工作流名称</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">更新时间</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">下载时间</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -95,9 +94,6 @@ const PurchasesPage: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">🐨{purchase.amount.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(purchase.created_at).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(purchase.updated_at).toLocaleString()}
                   </td>
                 </tr>
               ))}

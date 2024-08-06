@@ -165,7 +165,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
       <div className="bg-white rounded-lg shadow-xl w-[480px] max-w-full my-8 mx-auto">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-800">
-            上传 {uploadType === 'workflow' ? 'Workflow' : 'Prompt'}
+            上传 {uploadType === 'workflow' ? 'Workflow(支持 dify格式和JSON 格式)' : 'Prompt'}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -224,7 +224,7 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="description">
-                {uploadType === 'workflow' ? 'Workflow' : 'Prompt'} 简介
+                {uploadType === 'workflow' ? 'Workflow ' : 'Prompt'} 简介
               </label>
               <textarea
                 id="description"
@@ -332,13 +332,13 @@ const UploadWorkflowDialog: React.FC<UploadWorkflowDialogProps> = ({
               <input
                 id="file"
                 type="file"
-                accept={uploadType === 'workflow' ? ".yml,.yaml" : ".txt"}
+                accept={uploadType === 'workflow' ? ".yml,.yaml,.json" : ".txt"}
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
                 className="hidden"
                 required
               />
               <label htmlFor="file" className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
-                {file ? file.name : `选择 ${uploadType === 'workflow' ? 'YAML' : 'TXT'} 文件`}
+                {file ? file.name : `选择 ${uploadType === 'workflow' ? 'YAML/JSON' : 'TXT'} 文件`}
               </label>
             </div>
           </form>

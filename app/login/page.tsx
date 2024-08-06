@@ -65,6 +65,26 @@ export default function Login({
         console.error("Error inserting account record:", insertError);
         // You might want to handle this error, perhaps by deleting the auth user or notifying an admin
       }
+      const { error: profilesError } = await supabase
+      .from('profiles')
+      .insert({
+        id: authData.user.id,
+        email: authData.user.email,
+        // Add any other fields you want to initialize
+        // For example:
+        // full_name: '',
+        // avatar_url: '',
+        // etc.
+      });
+
+    if (profilesError) {
+      console.error("Error inserting profile record:", profilesError);
+    }
+
+    if (insertError || profilesError) {
+      // You might want to handle these errors, perhaps by deleting the auth user or notifying an admin
+      // For now, we'll just log the errors and continue
+    }
     }
   
     return redirect("/login?message=Check email to continue sign in process");
