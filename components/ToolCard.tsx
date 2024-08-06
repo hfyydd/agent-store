@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/client";
 import { FaDownload, FaTimes, FaEye } from 'react-icons/fa';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface ToolCardProps {
   id: string;
@@ -13,6 +14,9 @@ interface ToolCardProps {
   content: string;
   price?: number;
   icon_url: string;
+  views?: number;
+  favorites?: number;
+  test_url?: string;
 }
 
 interface Tag {
@@ -20,14 +24,18 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, tagIds, content, price, icon_url }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0,test_url }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
+  const [favorites, setFavorites] = useState(0);
 
   const [userBalance, setUserBalance] = useState(0);
   const { user } = useUser();
   const router = useRouter();
+
+  const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
+
 
   useEffect(() => {
     async function fetchTags() {
@@ -59,13 +67,32 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         }
       }
     }
+    async function fetchFavorites() {
+      const { count, error } = await supabase
+        .from('purchases')
+        .select('*', { count: 'exact', head: true })
+        .eq('workflow_id', id);
+
+      if (error) {
+        console.error('Error fetching favorites:', error);
+      } else {
+        setFavorites(count || 0);
+      }
+    }
+
+    fetchFavorites();
+
 
     fetchTags();
     fetchUserBalance();
   }, [tagIds, user, supabase]);
 
   const handleViewInChat = () => {
-    router.push(`/chat?workflow=${id}`);
+    if (test_url) {
+      router.push(`/chat?workflow=${id}`);
+    } else {
+      alert('该工作流没有提供测试 URL');
+    }
   };
 
   const renderTags = () => {
@@ -81,14 +108,26 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   const renderPrice = () => {
     return (
       <span className="text-green-600 font-semibold">
-        价格: {typeof price === 'number' ? `🐨${price.toFixed(2)}` : '未设置'}
+        🐨{typeof price === 'number' ? price.toFixed(2) : '0.00'}
       </span>
     );
   };
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+  const handleOpenModal = async () => {
+  setIsModalOpen(true);
+  
+  // 增加浏览次数
+  const { data, error } = await supabase
+    .from('workflows')
+    .update({ views: localViews + 1 })
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating views:', error);
+  } else {
+    setLocalViews(prevViews => prevViews + 1);
+  }
+};
 
   const handleDownload = async () => {
     if (!user) {
@@ -103,7 +142,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     }
     if (userBalance < price) {
       alert('余额不足，请前往充值页面充值');
-      router.push('/dashboard/recharge'); 
+      router.push('/dashboard/recharge');
       return;
     }
     const isConfirmed = window.confirm(`确认下载吗？将从您的账户中扣除 🐨${price.toFixed(2)}`);
@@ -147,46 +186,54 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
   return (
     <>
-      <div
-        className="border rounded-lg p-4 shadow-sm transition duration-300 ease-in-out hover:shadow-md hover:border-gray-400 hover:bg-gray-50 cursor-pointer flex flex-col justify-between h-40 sm:h-48 transform hover:-translate-y-1 hover:scale-105"
-        onClick={handleOpenModal}
-      >
-        <div>
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-bold text-base sm:text-lg transition duration-300 ease-in-out hover:text-blue-600 line-clamp-2 flex-grow mr-2">{title}</h3>
-            <div className="flex-shrink-0 text-sm sm:text-base">
+      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
+        <div className="flex items-start mb-3">
+          {icon_url && (
+            <Image src={icon_url} alt={title} width={80} height={80} className="rounded-lg mr-3" />
+          )}
+          <div className="flex-grow">
+            <h3 className="font-bold text-lg mb-1">{title}</h3>
+            <div className="flex items-center text-gray-500 text-sm">
               {renderPrice()}
             </div>
           </div>
-          <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-2 sm:line-clamp-3">{description}</p>
         </div>
-        <div className="mt-auto">
-          <div className="flex flex-wrap overflow-hidden h-8 sm:h-12">
-            {renderTags()}
-          </div>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-3">{description}</p>
+        <div className="flex flex-wrap gap-1 mb-3">
+          {renderTags()}
+        </div>
+        <div className="mt-auto flex justify-between items-center text-gray-500 text-sm">
+          <span className="flex items-center cursor-pointer">
+            <FaEye className="mr-1" /> {localViews}
+          </span>
+          <span className="flex items-center cursor-pointer">
+            <FaDownload className="mr-1" /> {favorites}
+          </span>
         </div>
       </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white rounded-lg w-full max-w-md h-[500px] flex flex-col relative"> {/* 固定高度为500px */}
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             >
               <FaTimes />
             </button>
-            <div className="p-4">
+            <div className="p-4 flex-grow overflow-y-auto"> {/* 使内容可滚动 */}
               <h2 className="text-lg font-bold mb-2">{title}</h2>
               {renderPrice()}
               <p className="text-gray-600 text-sm mt-2 mb-3">{description}</p>
               <div className="mb-3 flex flex-wrap">{renderTags()}</div>
+            </div>
+            <div className="p-4 border-t"> {/* 底部按钮固定 */}
               <div className="flex justify-end space-x-2">
-              <button
+                <button
                   onClick={handleViewInChat}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center text-sm"
                 >
-                  <FaEye className="mr-2" /> 查看
+                  <FaEye className="mr-2" /> 测试
                 </button>
                 <button
                   onClick={handleDownload}

@@ -8,11 +8,11 @@ export interface Workflow {
   name: string;
   description: string;
   views: number;
-  likes: number;
   tags: string[];
   content: string;
   price?: number;
   icon_url: string;
+  test_url: string;
 }
 
 interface WorkflowListProps {
@@ -44,6 +44,8 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           content={workflow.content}
           price={workflow.price}
           icon_url={workflow.icon_url}
+          test_url={workflow.test_url}
+          views={workflow.views}
         />
       ))}
     </div>
