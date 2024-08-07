@@ -6,7 +6,9 @@ export async function GET() {
   
   const { data: tags, error } = await supabase
     .from('tags')
-    .select('*');
+    .select('*')
+    .order('order_index', { ascending: true });
+    
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

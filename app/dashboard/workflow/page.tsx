@@ -14,7 +14,8 @@ export default async function WorkflowPage() {
   const { data: workflows, error: workflowsError } = await supabase
     .from('workflows')
     .select('*')
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    .order('views', { ascending: false });
 
   if (workflowsError) {
     console.error('Error fetching workflows:', workflowsError);
