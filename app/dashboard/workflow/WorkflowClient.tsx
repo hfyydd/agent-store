@@ -4,20 +4,33 @@
 import { useState, useEffect } from 'react';
 import { createClient } from "@/utils/supabase/client";
 import UploadWorkflowDialog from '@/components/UploadWorkflowDialog';
+import UpdateWorkflowDialog from '@/components/UpdateWorkflowDialog';
 
 interface Workflow {
   id: string;
   name: string;
   description: string;
+  icon_url: string | null;
   content: string;
+  test_url: string;
+  tags: string[];
+  price: number;
+  type: 'workflow' | 'prompt';
   created_at: string;
-  icon_url?: string;
 }
 
 export default function WorkflowClient({ initialWorkflows, userId }: { initialWorkflows: Workflow[], userId: string }) {
   const [workflows, setWorkflows] = useState<Workflow[]>(initialWorkflows);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
+
   const supabase = createClient();
+  const handleUpdate = (workflow: Workflow) => {
+    setSelectedWorkflow(workflow);
+    setIsUpdateDialogOpen(true);
+  };
+
 
   const fetchWorkflows = async () => {
     const { data, error } = await supabase
@@ -79,7 +92,7 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
               <div className="flex-grow">
                 <h2 className="text-lg font-semibold">{workflow.name}</h2>
                 <p className="text-gray-600">{workflow.description}</p>
-                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
+                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toISOString()}</p>
               </div>
               <div className="flex space-x-2">
                 <button
@@ -96,14 +109,12 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
                 >
                   下载
                 </button>
-                {/* <button
-                  onClick={() => {
-                    alert(workflow.content.slice(0, 200) + '...');
-                  }}
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-                >
-                  Preview
-                </button> */}
+                <button
+                onClick={() => handleUpdate(workflow)}
+                className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition-colors"
+              >
+                更新
+              </button>
                 <button
                   onClick={() => handleDelete(workflow.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
@@ -122,6 +133,19 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
         onUploadSuccess={fetchWorkflows}
         userId={userId}
       />
+      {selectedWorkflow && (
+        <UpdateWorkflowDialog
+          isOpen={isUpdateDialogOpen}
+          onClose={() => {
+            setIsUpdateDialogOpen(false);
+            setSelectedWorkflow(null);
+          }}
+          onUpdateSuccess={fetchWorkflows}
+          workflow={selectedWorkflow}
+        />
+      )}
     </div>
+
+  
   );
 }

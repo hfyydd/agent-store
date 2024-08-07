@@ -13,7 +13,7 @@ export default function NavBar() {
           <NavLink href="/store" enabled={true} label={
             <div className="flex items-center space-x-2">
               <Image src="/images/koala.svg" alt="Logo" width={32} height={32} />
-              <span className="font-bold text-lg sm:text-xl">考拉编程树屋</span>
+              <span className="font-bold text-lg sm:text-xl">考拉的交易市集</span>
             </div>
           } />
         </div>
