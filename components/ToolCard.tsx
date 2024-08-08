@@ -184,6 +184,8 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
     URL.revokeObjectURL(url);
   };
 
+  
+
   return (
     <>
       <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 ease-in-out flex flex-col h-full cursor-pointer" onClick={handleOpenModal}>
