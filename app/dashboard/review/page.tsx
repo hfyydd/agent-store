@@ -21,18 +21,19 @@ interface Workflow {
 
 export default function ReviewPage() {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [filteredWorkflows, setFilteredWorkflows] = useState<Workflow[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
   const [approvalAction, setApprovalAction] = useState<'approve' | 'reject' | null>(null);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const supabase = createClient();
 
-  // 获取未审批和已拒绝的工作流
   const fetchWorkflows = async () => {
     const { data, error } = await supabase
       .from('workflows')
       .select('*')
-      .in('approved', ['pending', 'rejected'])
       .order('created_at', { ascending: false });
   
     if (error) {
@@ -46,6 +47,25 @@ export default function ReviewPage() {
   useEffect(() => {
     fetchWorkflows();
   }, []);
+
+  useEffect(() => {
+    let result = workflows;
+    
+    if (filterStatus !== 'all') {
+      result = result.filter(workflow => workflow.approved === filterStatus);
+    }
+    
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      result = result.filter(workflow => 
+        workflow.name.toLowerCase().includes(lowercasedTerm) ||
+        workflow.description.toLowerCase().includes(lowercasedTerm) ||
+        workflow.tags.some(tag => tag.toLowerCase().includes(lowercasedTerm))
+      );
+    }
+    
+    setFilteredWorkflows(result);
+  }, [workflows, filterStatus, searchTerm]);
 
   const handleReviewClick = (workflow: Workflow, action: 'approve' | 'reject') => {
     setCurrentWorkflow(workflow);
@@ -99,11 +119,31 @@ export default function ReviewPage() {
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Workflows 审核</h1>
 
-      {workflows.length === 0 ? (
-        <p>没有 workflows 需要审核.</p>
+      <div className="mb-4 flex space-x-4">
+        <select 
+          value={filterStatus} 
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="all">全部</option>
+          <option value="pending">未审批</option>
+          <option value="approved">已审批</option>
+          <option value="rejected">已拒绝</option>
+        </select>
+        <input 
+          type="text" 
+          placeholder="搜索..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 border rounded flex-grow"
+        />
+      </div>
+
+      {filteredWorkflows.length === 0 ? (
+        <p>没有匹配的 workflows.</p>
       ) : (
         <ul className="space-y-4">
-          {workflows.map((workflow) => (
+          {filteredWorkflows.map((workflow) => (
             <li key={workflow.id} className="bg-white p-4 rounded shadow flex items-center">
               <img src={workflow.icon_url || '/default-icon.png'} alt={workflow.name} className="w-12 h-12 mr-4" />
               <div className="flex-grow">
