@@ -49,6 +49,7 @@ const Sidebar = () => {
         { id: 'admin', name: '管理员充值', path: '/dashboard/admin' },
         { id: 'transaction', name: '充值记录', path: '/dashboard/transaction' },
         { id: 'purchases', name: '交易记录', path: '/dashboard/purchases' },
+        { id: 'review', name: '审核记录', path: '/dashboard/review' },
       ]
     }
   ];

@@ -17,6 +17,8 @@ interface Workflow {
   price: number;
   type: 'workflow' | 'prompt';
   created_at: string;
+  approved: 'approved' | 'pending' | 'rejected';
+  rejection_reason: string | null;
 }
 
 export default function WorkflowClient({ initialWorkflows, userId }: { initialWorkflows: Workflow[], userId: string }) {
@@ -30,7 +32,6 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
     setSelectedWorkflow(workflow);
     setIsUpdateDialogOpen(true);
   };
-
 
   const fetchWorkflows = async () => {
     const { data, error } = await supabase
@@ -71,6 +72,28 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'text-green-500';
+      case 'rejected':
+        return 'text-red-500';
+      default:
+        return 'text-yellow-500';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return '已审批';
+      case 'rejected':
+        return '已拒绝';
+      default:
+        return '未审批';
+    }
+  };
+
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">我的 Workflows</h1>
@@ -92,10 +115,18 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
               <div className="flex-grow">
                 <h2 className="text-lg font-semibold">{workflow.name}</h2>
                 <p className="text-gray-600">{workflow.description}</p>
-                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toISOString()}</p>
+                <p className="text-sm text-gray-500">Created: {new Date(workflow.created_at).toLocaleString()}</p>
+                <p className={`text-sm font-semibold ${getStatusColor(workflow.approved)}`}>
+                  审核状态: {getStatusText(workflow.approved)}
+                </p>
+                {workflow.rejection_reason && (
+                  <p className="text-sm text-red-500">
+                    拒绝原因: {workflow.rejection_reason}
+                  </p>
+                )}
               </div>
               <div className="flex space-x-2">
-              <button
+                <button
                   onClick={() => {
                     const blob = new Blob([workflow.content], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
@@ -154,7 +185,5 @@ export default function WorkflowClient({ initialWorkflows, userId }: { initialWo
         />
       )}
     </div>
-
-
   );
 }

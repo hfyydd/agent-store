@@ -34,6 +34,7 @@ export default async function Index() {
     const { data: workflowsData, error: workflowsError } = await supabase
       .from('workflows')
       .select('*')
+      .eq('approved', 'approved')
       .order('created_at', { ascending: false });
 
     if (workflowsError) {
