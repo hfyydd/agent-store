@@ -74,7 +74,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         .eq('workflow_id', id);
 
       if (error) {
-        console.error('Error fetching favorites:', error);
+        //console.error('Error fetching favorites:', error);
       } else {
         setFavorites(count || 0);
       }
@@ -137,7 +137,16 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     if (!price || price <= 0) {
       // 如果工作流是免费的，直接下载
-      downloadWorkflow();
+      const { data, error } = await supabase.rpc('purchase_workflow', {
+        workflow_id: id,
+        workflow_price: 0
+      });
+      if (error) {
+        console.error('Purchase failed:', error);
+        alert('下载失败，请重试');
+      } else {
+        downloadWorkflow();
+      }
       return;
     }
     if (userBalance < price) {
@@ -164,6 +173,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   };
 
   const downloadWorkflow = () => {
+    console.log('Downloading workflow:', title);
     const blob = new Blob([content], { type: 'text/yaml;charset=utf-8' });
 
     // Create a URL for the Blob
