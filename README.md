@@ -1,93 +1,87 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Agent Store
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+Agent Store 是一个创新的AI agent交易市集，为AI代理的创建者和用户提供一个便捷的平台。本项目使用Next.js和Supabase构建，旨在创建一个高效、安全且用户友好的环境，促进AI代理的交易和使用。
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## 特性
 
-## Features
+- AI代理上传和展示
+- 用户友好的搜索和浏览界面
+- 安全的交易系统
+- 用户评价和反馈机制
+- 响应式设计，支持多种设备
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 技术栈
 
-## Demo
+- **前端** : Next.js, React, Tailwind CSS
+- **后端** : Supabase
+- **认证** : Supabase Auth
+- **数据库** : Supabase PostgreSQL
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+## 快速开始
 
-## Deploy to Vercel
+1. 克隆仓库
+git clone https://github.com/hfyydd/agent-store.git
+cd agent-store
 
-Vercel deployment will guide you through creating a Supabase account and project.
+2. 安装依赖
+npm install
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+3. 设置环境变量
+复制`.env.example`文件并重命名为`.env.local`，然后填写必要的环境变量。
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This%20starter%20configures%20Supabase%20Auth%20to%20use%20cookies%2C%20making%20the%20user's%20session%20available%20throughout%20the%20entire%20Next.js%20app%20-%20Client%20Components%2C%20Server%20Components%2C%20Route%20Handlers%2C%20Server%20Actions%20and%20Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+4. 运行开发服务器
+npm run dev
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+5. 打开 [http://localhost:3000](http://localhost:3000) 查看应用。
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+## 项目结构
+agent-store/
+├── components/ # React组件
+├── pages/ # Next.js页面
+├── public/ # 静态资源
+├── styles/ # CSS样式
+├── utils/ # 工具函数
+├── hooks/ # 自定义React Hooks
+├── context/ # React Context
+├── types/ # TypeScript类型定义
+├── .env.example # 环境变量示例
+├── next.config.js # Next.js配置
+└── package.json # 项目依赖和脚本
 
-## Clone and run locally
+## 部署
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+本项目可以轻松部署到Vercel平台：
 
-2. Create a Next.js app using the Supabase Starter template npx command
+1. 在Vercel上导入你的GitHub仓库
+2. 设置必要的环境变量
+3. 部署！
 
-   ```bash
-   npx create-next-app -e with-supabase
-   ```
+## 贡献
 
-3. Use `cd` to change into the app's directory
+我们欢迎任何形式的贡献！如果你有任何改进意见或发现了bug，请创建一个issue或提交一个pull request。
 
-   ```bash
-   cd name-of-new-app
-   ```
+1. Fork 该仓库
+2. 创建你的特性分支 
+3. 提交你的改动 
+4. 推送到分支 
+5. 开启一个 Pull Request
 
-4. Rename `.env.local.example` to `.env.local` and update the following:
+## 许可证
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+本项目采用 MIT 许可证。查看 [LICENSE](LICENSE) 文件了解更多详情。
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+## 联系我们
 
-5. You can now run the Next.js local development server:
+如果你有任何问题或建议，请通过以下方式联系我们：
 
-   ```bash
-   npm run dev
-   ```
+- 创建一个 GitHub issue
+- 发送邮件至 [hfloveyy@icloud.com](mailto:hfloveyy@icloud.com)
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+## 致谢
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+- [Next.js](https://nextjs.org/)
+- [Supabase](https://supabase.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vercel](https://vercel.com/)
 
-## Feedback and issues
-
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+感谢你对Agent Store的关注和支持！
