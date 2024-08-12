@@ -17,6 +17,7 @@ interface ToolCardProps {
   views?: number;
   favorites?: number;
   test_url?: string;
+  downloads?: number;
 }
 
 interface Tag {
@@ -24,18 +25,18 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0,test_url }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0,test_url ,downloads=0 }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
-  const [favorites, setFavorites] = useState(0);
+  //const [favorites, setFavorites] = useState(0);
 
   const [userBalance, setUserBalance] = useState(0);
   const { user } = useUser();
   const router = useRouter();
 
   const [localViews, setLocalViews] = useState(views); // 本地保存的浏览次数
-
+  const [localDownloads, setLocalDownloads] = useState(downloads); // 本地保存的浏览次数
 
   useEffect(() => {
     async function fetchTags() {
@@ -67,21 +68,20 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         }
       }
     }
-    async function fetchFavorites() {
-      const { count, error } = await supabase
-        .from('purchases')
-        .select('*', { count: 'exact', head: true })
-        .eq('workflow_id', id);
+    // async function fetchFavorites() {
+    //   const { count, error } = await supabase
+    //     .from('purchases')
+    //     .select('*', { count: 'exact', head: true })
+    //     .eq('workflow_id', id);
 
-      if (error) {
-        //console.error('Error fetching favorites:', error);
-      } else {
-        setFavorites(count || 0);
-      }
-    }
+    //   if (error) {
+    //     //console.error('Error fetching favorites:', error);
+    //   } else {
+    //     setFavorites(count || 0);
+    //   }
+    // }
 
-    fetchFavorites();
-
+    // fetchFavorites();
 
     fetchTags();
     fetchUserBalance();
@@ -192,6 +192,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     // Release the URL object
     URL.revokeObjectURL(url);
+    setLocalDownloads(prevDownloads => prevDownloads + 1);
   };
 
   
@@ -219,7 +220,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
             <FaEye className="mr-1" /> {localViews}
           </span>
           <span className="flex items-center cursor-pointer">
-            <FaDownload className="mr-1" /> {favorites}
+            <FaDownload className="mr-1" /> {localDownloads}
           </span>
         </div>
       </div>

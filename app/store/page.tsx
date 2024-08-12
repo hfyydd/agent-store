@@ -33,14 +33,19 @@ export default async function Index() {
 
     const { data: workflowsData, error: workflowsError } = await supabase
       .from('workflows')
-      .select('*')
+      .select(`
+        *,
+        downloads:purchases(count)
+      `)
       .eq('approved', 'approved')
       .order('created_at', { ascending: false });
-
     if (workflowsError) {
       console.error('Error fetching workflows:', workflowsError);
     } else if (workflowsData) {
-      workflows = workflowsData as Workflow[];
+      workflows = workflowsData.map(workflow => ({
+        ...workflow,
+        downloads: workflow.downloads[0]?.count || 0
+      }));
     }
   } catch (error) {
     console.error('Unexpected error:', error);

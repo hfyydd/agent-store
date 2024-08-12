@@ -2,6 +2,7 @@
 "use client"
 import { useSearchParams } from "next/navigation";
 import ToolCard from "@/components/ToolCard";
+import { useState } from "react";
 
 export interface Workflow {
   id: string;
@@ -13,13 +14,17 @@ export interface Workflow {
   price?: number;
   icon_url: string;
   test_url: string;
+  downloads: number;
 }
 
 interface WorkflowListProps {
   workflows: Workflow[];
 }
 
+type SortOption = 'price' | 'views' | 'name' | 'downloads';
+
 export default function WorkflowList({ workflows }: WorkflowListProps) {
+  const [sortBy, setSortBy] = useState<SortOption>('downloads');
   const searchParams = useSearchParams();
   const tagId = searchParams.get('tag');
   const searchTerm = searchParams.get('search');
@@ -32,9 +37,24 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
     return matchesTag && matchesSearch;
   });
 
+  const sortedWorkflows = [...filteredWorkflows].sort((a, b) => {
+    switch (sortBy) {
+      case 'price':
+        return (a.price || 0) - (b.price || 0);
+      case 'views':
+        return b.views - a.views;
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'downloads':
+        return b.downloads - a.downloads;
+      default:
+        return 0;
+    }
+  });
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {filteredWorkflows.map((workflow) => (
+      {sortedWorkflows.map((workflow) => (
         <ToolCard
           key={workflow.id}
           id={workflow.id}
@@ -46,6 +66,7 @@ export default function WorkflowList({ workflows }: WorkflowListProps) {
           icon_url={workflow.icon_url}
           test_url={workflow.test_url}
           views={workflow.views}
+          downloads={workflow.downloads}
         />
       ))}
     </div>
