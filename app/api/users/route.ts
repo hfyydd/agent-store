@@ -61,7 +61,9 @@ export async function GET(req: NextRequest) {
   }
 
   // 获取用户列表
-  const { data, error: usersError } = await supabase.auth.admin.listUsers();
+  const { data, error: usersError } = await supabase.auth.admin.listUsers({
+    perPage: 1000, // 或者更大的数字，取决于你的需求
+  });
 
   if (usersError) {
     return NextResponse.json({ error: usersError.message }, { status: 500 });
