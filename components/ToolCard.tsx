@@ -25,7 +25,7 @@ interface Tag {
   name: string;
 }
 
-export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0,test_url ,downloads=0 }: ToolCardProps) {
+export default function ToolCard({ id, title, description, tagIds, content, price, icon_url, views = 0, test_url, downloads = 0 }: ToolCardProps) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
@@ -114,24 +114,43 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
   };
 
   const handleOpenModal = async () => {
-  setIsModalOpen(true);
-  
-  // 增加浏览次数
-  const { data, error } = await supabase
-    .from('workflows')
-    .update({ views: localViews + 1 })
-    .eq('id', id);
+    setIsModalOpen(true);
 
-  if (error) {
-    console.error('Error updating views:', error);
-  } else {
-    setLocalViews(prevViews => prevViews + 1);
-  }
-};
+    // 增加浏览次数
+    const { data, error } = await supabase
+      .from('workflows')
+      .update({ views: localViews + 1 })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating views:', error);
+    } else {
+      setLocalViews(prevViews => prevViews + 1);
+    }
+  };
 
   const handleDownload = async () => {
     if (!user) {
       alert('请先登录');
+      return;
+    }
+
+    const { data: purchaseData, error: purchaseError } = await supabase
+      .from('purchases')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('workflow_id', id)
+      .single();
+
+    if (purchaseError && purchaseError.code !== 'PGRST116') {
+      console.error('Error checking purchase:', purchaseError);
+      alert('检查购买记录时出错，请重试');
+      return;
+    }
+
+    if (purchaseData) {
+      // 用户已经购买过，直接下载
+      downloadWorkflow();
       return;
     }
 
@@ -146,6 +165,7 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
         alert('下载失败，请重试');
       } else {
         downloadWorkflow();
+        setLocalDownloads(prevDownloads => prevDownloads + 1);
       }
       return;
     }
@@ -168,12 +188,12 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
       } else {
         setUserBalance(prevBalance => prevBalance - price);
         downloadWorkflow();
+        setLocalDownloads(prevDownloads => prevDownloads + 1);
       }
     }
   };
 
   const downloadWorkflow = () => {
-    console.log('Downloading workflow:', title);
     const blob = new Blob([content], { type: 'text/yaml;charset=utf-8' });
 
     // Create a URL for the Blob
@@ -192,10 +212,10 @@ export default function ToolCard({ id, title, description, tagIds, content, pric
 
     // Release the URL object
     URL.revokeObjectURL(url);
-    setLocalDownloads(prevDownloads => prevDownloads + 1);
+    
   };
 
-  
+
 
   return (
     <>
