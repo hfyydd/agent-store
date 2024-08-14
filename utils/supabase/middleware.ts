@@ -37,15 +37,19 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    // const {
+    //   data: { user },
+    // } = await supabase.auth.getUser()
+    // console.log('user', user)
+    const { data:{user}, error } = await supabase.auth.getUser();
+    console.log('Auth data:', user);
+    console.log('Auth error:', error);
 
     // All API routes require authentication
-    //if (!user && request.nextUrl.pathname.startsWith('/api')) {
-    if (!user) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 })
-    }
+    // if (!user && request.nextUrl.pathname.startsWith('/api')) {
+    // //if (!user) {
+    //   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 })
+    // }
 
     return response;
   } catch (e) {

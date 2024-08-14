@@ -5,6 +5,6 @@
 
 import { redirect } from 'next/navigation';
 
-export default function DisabledPage() {
+export default function DbChatPage() {
   redirect('/store');
 }

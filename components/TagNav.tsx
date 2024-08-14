@@ -20,7 +20,9 @@ export default function TagNav() {
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
 
-  const { data: tags, error } = useSWR<Tag[]>('/api/tags', fetcher);
+  const { data, error } = useSWR<Tag[]>('/api/tags', fetcher);
+  const tags: Tag[] = Array.isArray(data) ? data : (data?.tags || []);
+  console.log('Tags:', tags);
 
   if (error) console.error('Error fetching tags:', error);
 
@@ -58,7 +60,7 @@ export default function TagNav() {
         >
           全部
         </Link>
-        {tags && tags.map((tag) => (
+        {tags && tags?.map((tag) => (
           <button
             key={tag.id}
             onClick={() => handleTagClick(tag.id)}

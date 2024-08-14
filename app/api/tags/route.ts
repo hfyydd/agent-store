@@ -11,6 +11,7 @@ export async function GET() {
     
 
   if (error) {
+    console.error('Error fetching tags:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
