@@ -10,7 +10,13 @@ interface Tag {
   name: string;
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string): Promise<Tag[]> => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error('An error occurred while fetching the data.');
+  }
+  return res.json();
+};
 
 export default function TagNav() {
   const router = useRouter();
@@ -20,8 +26,7 @@ export default function TagNav() {
 
   const [searchTerm, setSearchTerm] = useState(currentSearch);
 
-  const { data, error } = useSWR<Tag[]>('/api/tags', fetcher);
-  const tags: Tag[] = Array.isArray(data) ? data : (data?.tags || []);
+  const { data:tags, error } = useSWR<Tag[]>('/api/tags', fetcher);
   console.log('Tags:', tags);
 
   if (error) console.error('Error fetching tags:', error);
